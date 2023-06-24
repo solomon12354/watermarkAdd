@@ -162,7 +162,7 @@ def process(originPath,watermark,heightMode,widthMode,fin):
         
 if __name__ == '__main__':
     window = tk.Tk()
-    window.title('GUI')
+    window.title('WaterMark!')
     window.geometry('800x700')
     window.resizable(False, False)
     
