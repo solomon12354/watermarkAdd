@@ -9,6 +9,7 @@ from tkinter import filedialog as fd
 from tkinter import ttk, filedialog
 from tkinter.filedialog import askopenfile
 from functools import partial
+import math
 
 global origin
 origin = ''
@@ -16,6 +17,12 @@ global watermarks
 watermarks = ''
 global final
 final = 'C:\\newPhoto'
+
+def show_value_h1(value):        # 使用類別變數的 get() 方法取得滑桿值
+    global sizeOfMark
+    label_h1.set(round(var_h1.get(),2))
+    sizeOfMark = round(var_h1.get(),2)
+    return sizeOfMark
 
 def onOK():
     msg = ''
@@ -59,9 +66,8 @@ def open_file(pathDisplay):
 def open_picture(pathDisplay):
     global B
     file = filedialog.askopenfile(filetypes=[
-                                            
-                                            ("jpeg files","*.jpg"),
                                             ("png files","*.png"),
+                                            ("jpeg files","*.jpg"),
                                             ("gif files","*.gif"),('All Files','*')])
     if file:
       B = file.name
@@ -71,6 +77,7 @@ def open_picture(pathDisplay):
 
 def process(originPath,watermark,heightMode,widthMode,fin):
 
+    size = 0.2
     if not os.path.exists(fin):
         os.mkdir(fin)
     print(origin,watermarks)
@@ -85,6 +92,11 @@ def process(originPath,watermark,heightMode,widthMode,fin):
     except:
         noPath()
         return
+
+    try:
+        size = sizeOfMark
+    except:
+        size = 0.2
     heightMode = 0
     widthMode = 0
     global mode
@@ -112,7 +124,7 @@ def process(originPath,watermark,heightMode,widthMode,fin):
             rate = h2/w2
 
             
-            w2 = int(w1 * 0.2) 
+            w2 = int(w1 * size) 
             h2 = int(w2 * rate)
 
             img1 = cv2.resize(img1,(w1,h1))
@@ -184,6 +196,20 @@ if __name__ == '__main__':
     pathDisplay3.place(relx=0.01, rely=0.4)
     browse3 = tk.Button(text="Browse", command=partial(open_new,pathDisplay2),height=1,width=10)
     browse3.place(relx=0.8, rely=0.4)
+
+    pathDisplay4 = Label(window, text="浮水印比例(Rate of watermark): ", font=('Aerial 11'))
+    pathDisplay4.place(relx=0.1, rely=0.45)
+    
+    var_h1=tk.DoubleVar()
+
+    scale_h=ttk.Scale(window, variable=var_h1, command=show_value_h1,from_=0.2, to=0.6,length=200)      # 預設水平滑桿
+    
+    scale_h.place(relx=0.55, rely=0.45)
+
+    label_h1=tk.StringVar()             # 顯示第一個水平滑桿值之 Label
+    label_h1.set("0.2")
+    tk.Label(window, textvariable=label_h1).place(relx=0.4, rely=0.45)
+    
 
     var = IntVar()
     var.set(0)
